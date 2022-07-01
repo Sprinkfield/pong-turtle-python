@@ -1,6 +1,6 @@
 """
 If you need to change ball's speed, go to line 44 and line 45 and modify turtle_object.dx.
-If you want to change or disable increasing ball's speed after every score changing, go to line 74 and line 75.
+If you want to change or disable increasing ball's speed after every score changing, go to line 81 and line 82.
 """
 import turtle
 
