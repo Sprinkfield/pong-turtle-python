@@ -1,6 +1,6 @@
 """
 If you need to change ball's speed, go to line 44 and line 45 and modify turtle_object.dx.
-If you want to change or disable increasing ball's speed after every score changing, go to line 81 and line 82.
+If you want to change or disable increasing ball's speed after every score changing, go to line 85 and line 86.
 """
 import turtle
 
@@ -97,12 +97,7 @@ class BorderChecking:
 
     def check_border(self):
         # Border checking
-        if self.ball.ycor() > 290:
-            self.ball.sety(290)
-            self.ball.dy *= -1  # Reverse ball's direction
-
-        if self.ball.ycor() < -290:
-            self.ball.sety(-290)
+        if abs(self.ball.ycor()) > 290:
             self.ball.dy *= -1  # Reverse ball's direction
 
         if self.ball.xcor() > 390:
@@ -112,6 +107,8 @@ class BorderChecking:
         if self.ball.xcor() < -390:
             self.score_b += 1 
             NewRoundBeginning(self.score_a, self.score_b).output_score(self.ball)
+        
+        return self.score_a, self.score_b
 
 
 class PaddleAndBallCollisions:
@@ -166,8 +163,8 @@ def main():
         TurtleObjectManipulation(ball1).move_the_ball()
         TurtleObjectManipulation(ball2).move_the_ball()
 
-        BorderChecking(ball1, score_1, score_2).check_border()
-        BorderChecking(ball2, score_1, score_2).check_border()
+        score_1 = BorderChecking(ball1, score_1, score_2).check_border()[0]
+        score_2 = BorderChecking(ball2, score_1, score_2).check_border()[1]
 
         PaddleAndBallCollisions(ball1, paddle_a, paddle_b).check_collision()
         PaddleAndBallCollisions(ball2, paddle_a, paddle_b).check_collision()
