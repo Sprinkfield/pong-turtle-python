@@ -1,3 +1,7 @@
+"""
+If you need to change ball's speed, go to line 44 and line 45 and modify turtle_object.dx.
+If you want to change or disable increasing ball's speed after every score changiing, go to line 74 and line 75.
+"""
 import turtle 
 
 
@@ -27,14 +31,15 @@ class CreateGameObject:
         """This function creates a paddle or a ball depending on the value of is_paddle."""
         turtle_object = turtle.Turtle()
         turtle_object.speed(0)
-        turtle_object.shape('square')
         turtle_object.color('white')
         turtle_object.penup()
         turtle_object.goto(self.x_coord, 0)
 
         if self.is_paddle:
+            turtle_object.shape('square')
             turtle_object.shapesize(stretch_wid=5, stretch_len=1)
         else:
+            turtle_object.shape('circle')
             turtle_object.shapesize(stretch_wid=1, stretch_len=1)
             turtle_object.dx = 0.15  # Setting the distance (speed) of the ball movement along the X axis
             turtle_object.dy = 0.15  # Setting the distance (speed) of the ball movement along the Y axis
@@ -55,6 +60,22 @@ class PaddleManipulation:
         y = self.object.ycor()
         y -= 20
         self.object.sety(y)
+
+
+class NewRoundBeginning:
+    def __init__(self, score_a, score_b):
+        self.score_a = score_a
+        self.score_b = score_b
+    
+    def output_score(self, ball):
+        ball.goto(0, 0)
+        ball.dx *= -1  # Reverse ball's direction
+        # Increasing ball speed
+        ball.dx *= 1.05
+        ball.dy *= 1.05
+        # Output of the score
+        score_info.clear()
+        score_info.write(f'Player 1: {self.score_a}  Player 2: {self.score_b}', align='center', font=('Courier', 24, 'normal'))
 
 
 def main():
@@ -95,26 +116,12 @@ def main():
             ball.dy *= -1  # Reverse ball's direction
 
         if ball.xcor() > 390:
-            ball.goto(0, 0)
-            ball.dx *= -1  # Reverse ball's direction
-            # Increasing ball speed
-            ball.dx *= 1.05
-            ball.dy *= 1.05
-            # Output of the score
             score_a += 1 
-            score_info.clear()
-            score_info.write(f'Player 1: {score_a}  Player 2: {score_b}', align='center', font=('Courier', 24, 'normal'))
+            NewRoundBeginning(score_a, score_b).output_score(ball)
 
         if ball.xcor() < -390:
-            ball.goto(0, 0)
-            ball.dx *= -1  # Reverse ball's direction
-            # Increasing ball speed
-            ball.dx *= 1.05
-            ball.dy *= 1.05
-            # Output of the score
             score_b += 1 
-            score_info.clear()
-            score_info.write(f'Player 1: {score_a}  Player 2: {score_b}', align='center', font=('Courier', 24, 'normal'))
+            NewRoundBeginning(score_a, score_b).output_score(ball)
 
         # Paddle and ball collisions
         if (340 < ball.xcor() < 350) and (paddle_b.ycor() - 50 < ball.ycor() < paddle_b.ycor() + 50): 
