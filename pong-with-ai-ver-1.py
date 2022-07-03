@@ -101,6 +101,8 @@ def main():
     game_window.listen()
     game_window.onkeypress(PaddleManipulation(paddle_a).move_paddle_up, 'w')
     game_window.onkeypress(PaddleManipulation(paddle_a).move_paddle_down, 's')
+    game_window.onkeypress(PaddleManipulation(paddle_a).move_paddle_up, 'Up')
+    game_window.onkeypress(PaddleManipulation(paddle_a).move_paddle_down, 'Down')
 
     # Disabled due it is a version of the game with an AI.
     #game_window.onkeypress(PaddleManipulation(paddle_b).move_paddle_up, 'Up')
