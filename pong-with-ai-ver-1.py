@@ -1,8 +1,9 @@
 """
-If you need to change ball's speed, go to line 44 and line 45 and modify turtle_object.dx.
+If you need to change ball's speed, go to line 45 and modify turtle_object.dx.
 If you want to change or disable increasing ball's speed after every score changing, go to line 81 and line 82.
 """
 import turtle
+import random
 
 
 # Game window setup
@@ -41,8 +42,8 @@ class CreateGameObject:
         else:
             turtle_object.shape('circle')
             turtle_object.shapesize(stretch_wid=1, stretch_len=1)
-            turtle_object.dx = 0.15  # Setting the distance (speed) of the ball movement along the X axis
-            turtle_object.dy = 0.15  # Setting the distance (speed) of the ball movement along the Y axis
+            turtle_object.dx = random.uniform(0.08, 0.2)  # Setting the distance (speed) of the ball movement along the X axis (range of random.uniform(): [0; 1]. If you need speed > 1, use random.randrange(). Also don't forget to change turtle_object.dy (line 46))
+            turtle_object.dy = 0.3 - turtle_object.dx  # Setting the distance (speed) of the ball movement along the Y axis
 
         return turtle_object
 
@@ -75,17 +76,19 @@ class NewRoundBeginning:
         self.score_b = score_b
     
     def output_score(self, ball):
-        ball.goto(0, 0)
+        ball.goto(-1000, -1000)
         ball.dx *= -1  # Reverse ball's direction
         # Increasing ball speed
-        ball.dx *= 1.05
-        ball.dy *= 1.05
+        ball.dx *= 1.01
+        ball.dy *= 1.01
         # Output of the score
         score_info.clear()
         score_info.write(f'Player: {self.score_a}  AI: {self.score_b}', align='center', font=('Courier', 24, 'normal'))
 
 
 def main():
+    new_round_flag = True
+
     # Player Score
     score_a = 0
     score_b = 0
@@ -93,9 +96,6 @@ def main():
     # Paddles
     paddle_a = CreateGameObject(-350, is_paddle=True).create_object()
     paddle_b = CreateGameObject(350, is_paddle=True).create_object()
-
-    # Ball
-    ball = CreateGameObject(0, is_paddle=False).create_object()
 
     # Processing user keyboard input
     game_window.listen()
@@ -107,6 +107,11 @@ def main():
     #game_window.onkeypress(PaddleManipulation(paddle_b).move_paddle_down, 'Down')
 
     while True:
+        if new_round_flag:
+            # Ball
+            ball = CreateGameObject(0, is_paddle=False).create_object()
+            new_round_flag = False
+
         game_window.update()
 
         # Move the ball
@@ -124,18 +129,24 @@ def main():
 
         if ball.xcor() > 390:
             score_a += 1 
+            new_round_flag = True
             NewRoundBeginning(score_a, score_b).output_score(ball)
 
         if ball.xcor() < -390:
             score_b += 1 
+            new_round_flag = True
             NewRoundBeginning(score_a, score_b).output_score(ball)
 
         # Paddle and ball collisions
         if (340 < ball.xcor() < 350) and (paddle_b.ycor() - 50 < ball.ycor() < paddle_b.ycor() + 50): 
             ball.dx *= -1  # Reverse ball's direction because the ball collided with the paddle
+            ball.dx *= 1.01
+            ball.dy *= 1.01
 
         if (-350 < ball.xcor() < -340) and (paddle_a.ycor() - 50 < ball.ycor() < paddle_a.ycor() + 50): 
             ball.dx *= -1  # Reverse ball's direction because the ball collided with the paddle
+            ball.dx *= 1.01
+            ball.dy *= 1.01
 
         # Preventing the paddle from moving outside the game window
         if paddle_a.ycor() > 250:
